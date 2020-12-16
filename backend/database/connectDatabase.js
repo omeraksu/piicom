@@ -8,10 +8,11 @@ const connectDatabase = () => {
         useUnifiedTopology:true
     })
     .then(() =>{
-        console.log("MongoDb Connection Succesfull");
+        console.log("MongoDb Connect Succesfull");
     })
     .catch(err =>{
         console.error(err);
+        console.log("MongoDb Connection is Failed");
     })
 }
 module.exports = connectDatabase
