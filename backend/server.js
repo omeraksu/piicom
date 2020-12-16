@@ -2,13 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
+const connectDatabase = require("./database/connectDatabase");
 //Config Bağlantısı
-
 dotenv.config({
-    path: "/config.env"
+    path:"./config/config.env"
 });
+
+//MongoDb Parametrik Bağlantı 
+connectDatabase();
 
 
 
