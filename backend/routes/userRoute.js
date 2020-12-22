@@ -3,6 +3,8 @@ const User = require('../models/userModel')
 
 const router = express.Router();
 
+
+
 router.get("/createadmin",async(req,res) =>{
     try{
         const user =new User({
