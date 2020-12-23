@@ -1,52 +1,51 @@
-const express = require('express');
-const User = require('../models/userModel');
-
+const express = require("express");
+const User = require("../models/userModel");
 
 const router = express.Router();
 
+// TODO: express-validator, bcryptjs, jsonwebtoken eklenecek
+// TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
 
-router.post("/signin", async (req, res) => {
-    try {
-        const signinUser = await User.findOne({
-            email: req.body.email,
-            password: req.body.password
-        });
-        res.send({
-            _id: signinUser.id,
-            name: signinUser.name,
-            email: signinUser.email,
-            password: signinUser.password,
-            token: getToken(signinUser)
-        })
+router.post("/signup", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({
+      email,
+    });
+
+    if (user) {
+      return res.status(400).json({
+        msg: "User Already Exists",
+      });
     }
-
-    catch (error){
-        res.status(401).send({ msg:error.message });
-    }
-
+    user = new User({
+      email,
+      password,
+    });
+    await user.save();
+    res.status(200).send({ msg: "user create" });
+  } catch (err) {
+    res.status(401).send({ msg: err.message });
+  }
 });
 
+router.post("/signin", async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    let user = await User.findOne({
+      email,
+      password,
+    });
+    if (!user)
+      return res.status(400).json({
+        message: "User Not Exist",
+      });
+    res.status(200).send({ msg: "welcome to dark side" });
+  } catch (error) {
+    res.send({ msg: error.message });
+  }
+});
 
-router.get("/createadmin", async (req, res) => {
-    try {
-        const user =  new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            isAdmin: req.body.isAdmin
-        });
-        const newUser = await user.save();
-        res.send(newUser);
-    }
-    catch (error) {
-        res.send({ msg: error.message });
-    }
-})
-
-
-
-
-
-
-module.exports = router
+module.exports = router;
