@@ -2,12 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const connectDatabase = require("./database/connectDatabase");
+const bodyParser = require('body-parser');
 const userRoute = require('./routes/userRoute');
-
+const router = require('./jwt')
 
 //Config Bağlantısı
 dotenv.config({
-    path: "./config/config.env"
+    path: "./config.env"
 });
 
 
@@ -15,15 +16,15 @@ dotenv.config({
 //MongoDb Parametrik Bağlantı 
 connectDatabase();
 const PORT = process.env.PORT;
+const jwt = process.env.JWT;
 const app = express();
 
 
-
-app.get('/', (req, res) => res.json('Home Screen'));
+app.use(bodyParser.json());
 
 app.use("/api/users", userRoute);
 
-
+app.get('/', (req, res) => res.json('Home Screen'));
 
 
 
