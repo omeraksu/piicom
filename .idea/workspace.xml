@@ -20,13 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="15cdf1e0-ce91-4e84-acc2-f4280c0649cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/connectDatabase.js" beforeDir="false" afterPath="$PROJECT_DIR$/database/connectDatabase.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jwt.js" beforeDir="false" afterPath="$PROJECT_DIR$/jwt.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/userModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/userModel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/userRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/userRoute.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +60,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1608754700210</updated>
-      <workItem from="1608754702743" duration="2202000" />
+      <workItem from="1608754702743" duration="3368000" />
+      <workItem from="1608803048393" duration="72000" />
     </task>
     <servers />
   </component>
@@ -81,6 +78,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="179" y="48" key="SettingsEditor" timestamp="1608755124307">
