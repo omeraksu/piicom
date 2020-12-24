@@ -1,4 +1,5 @@
 const express = require("express");
+const { create } = require("../models/userModel");
 const User = require("../models/userModel");
 
 const router = express.Router();
@@ -7,7 +8,7 @@ const router = express.Router();
 // TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
 
 router.post("/signup", async (req, res) => {
-  const { email, password, name, isAdmin } = req.body;
+  const { email, password, name, isAdmin,created,profile_image } = req.body;
 
   try {
     let user = await User.findOne({
@@ -26,6 +27,8 @@ router.post("/signup", async (req, res) => {
       password,
       name,
       isAdmin,
+      created,
+      profile_image
     });
 
     // save
@@ -34,7 +37,7 @@ router.post("/signup", async (req, res) => {
     //response
     res
       .status(200)
-      .send({ name: name, mail: email, password: password, isAdmin: isAdmin });
+      .send({ name: name, mail: email, password: password, isAdmin: isAdmin,created:created,profile_image:profile_image});
 
     //catch
   } catch (err) {
