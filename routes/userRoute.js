@@ -8,7 +8,7 @@ const router = express.Router();
 // TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
 
 router.post("/signup", async (req, res) => {
-  const { email, password, name, isAdmin,created,profile_image } = req.body;
+  const { email, password, name, isAdmin, created, profile_image } = req.body;
 
   try {
     let user = await User.findOne({
@@ -17,6 +17,7 @@ router.post("/signup", async (req, res) => {
 
     if (user) {
       return res.status(400).json({
+        succes:false,
         msg: "User Already Exists",
       });
     }
@@ -37,11 +38,17 @@ router.post("/signup", async (req, res) => {
     //response
     res
       .status(200)
-      .send({ name: name, mail: email, password: password, isAdmin: isAdmin,created:created,profile_image:profile_image});
+      .json({ 
+        succes:true,
+        data:user
+      
+      });
 
     //catch
   } catch (err) {
-    res.status(401).send({ msg: err.message });
+    res.status(401).send({ 
+      
+      msg: err.message });
   }
 });
 
@@ -64,6 +71,8 @@ router.post("/signin", async (req, res) => {
       msg: "welcome to dark side",
       email: email,
       password: password,
+      
+      
     });
 
     // catch
