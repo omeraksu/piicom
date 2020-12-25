@@ -1,5 +1,5 @@
 const express = require("express");
-const { connection } = require("mongoose");
+const { connection, Mongoose } = require("mongoose");
 const getToken = require("../jwt");
 const User = require("../models/userModel");
 const router = express.Router();
@@ -8,6 +8,8 @@ const router = express.Router();
 
 // TODO: express-validator, bcryptjs, jsonwebtoken eklenecek
 // TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
+
+// AUTH
 
 router.post("/signup", async (req, res) => {
   const { email, password, name, isAdmin, created, profile_image } = req.body;
@@ -62,6 +64,7 @@ router.post("/signin", async (req, res) => {
     let user = await User.findOne({
       email,
       password,
+     
     });
 
     if (!user)
@@ -72,31 +75,48 @@ router.post("/signin", async (req, res) => {
     // response
     res.status(200).send({
       msg: "Login Succesfull",
-      email: email,
-      password: password,
+      data:user,
       token:getToken(user)
       
-
-
-
     });
-
-
   } catch (error) {
   res.send({ msg: error.message });
 }
 });
 
+
+router.post('/forgetpass', async (req,res) => {
+  const {email} = req.body
+  try {
+      let user = await User.findOne({
+        email
+      })
+      if(!user){
+        res.status(400).send({
+          msg: "Email is not Defined"
+        })
+      }
+      res.status(200).send({
+        msg: "Email is Defined",
+        data: user
+      })
+  }
+   catch(err){
+     res.send({msg: err.message});
+   }
+})
+
     //users: update request //POST REQ ile çalışılacak
-router.post('/forgetpass/:id',(req,res) =>{
+router.put('/forgetpass/:id',(req,res) =>{
+  
   User.findByIdAndUpdate({_id:req.params.id},req.body).then(function(user){
     res.status(200).json({
       msg:"Updated Data Succesfull",
       data:user
-      
     });
   });
 });
+   
 
 
 //users:delete request
@@ -108,5 +128,7 @@ router.delete('/delete/:id',(req,res) =>{
     })
   });
 });
+
+
 
 module.exports = router;
