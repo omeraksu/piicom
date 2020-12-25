@@ -1,6 +1,8 @@
 const express = require("express");
-const { create } = require("../models/userModel");
+const { connection } = require("mongoose");
+
 const User = require("../models/userModel");
+
 
 const router = express.Router();
 
@@ -17,7 +19,7 @@ router.post("/signup", async (req, res) => {
 
     if (user) {
       return res.status(400).json({
-        succes:false,
+        succes: false,
         msg: "User Already Exists",
       });
     }
@@ -35,20 +37,21 @@ router.post("/signup", async (req, res) => {
     // save
     await user.save();
 
-    //response
+    //response status and user data
     res
       .status(200)
-      .json({ 
-        succes:true,
-        data:user
-      
+      .json({
+        succes: true,
+        data: user
+
       });
 
     //catch
   } catch (err) {
-    res.status(401).send({ 
-      
-      msg: err.message });
+    res.status(401).send({
+
+      msg: err.message
+    });
   }
 });
 
@@ -71,14 +74,23 @@ router.post("/signin", async (req, res) => {
       msg: "welcome to dark side",
       email: email,
       password: password,
-      
-      
+
+
+
     });
 
-    // catch
+
   } catch (error) {
-    res.send({ msg: error.message });
-  }
+  res.send({ msg: error.message });
+}
 });
 
+    //users:email update request
+router.put('/forgetpass/:id',(req,res) =>{
+  User.findByIdAndUpdate({_id:req.params.id},req.body).then(function(User){
+    res.send(User);
+  })
+ 
+  
+});
 module.exports = router;
