@@ -41,6 +41,7 @@ router.post("/signup", async (req, res) => {
     res
       .status(200)
       .json({
+        msg :"Registration Successful",
         succes: true,
         data: user
 
@@ -49,8 +50,7 @@ router.post("/signup", async (req, res) => {
     //catch
   } catch (err) {
     res.status(401).send({
-
-      msg: err.message
+       msg: err.message
     });
   }
 });
@@ -71,7 +71,7 @@ router.post("/signin", async (req, res) => {
 
     // response
     res.status(200).send({
-      msg: "welcome to dark side",
+      msg: "Login Succesfull",
       email: email,
       password: password,
 
@@ -85,18 +85,25 @@ router.post("/signin", async (req, res) => {
 }
 });
 
-    //users: update request
-router.put('/forgetpass/:id',(req,res) =>{
-  User.findByIdAndUpdate({_id:req.params.id},req.body).then(function(User){
-    res.status(200).send(User);
+    //users: update request //POST REQ ile çalışılacak
+router.post('/forgetpass/:id',(req,res) =>{
+  User.findByIdAndUpdate({_id:req.params.id},req.body).then(function(user){
+    res.status(200).json({
+      msg:"Updated Data Succesfull",
+      data:user
+      
+    });
   });
 });
 
 
 //users:delete request
 router.delete('/delete/:id',(req,res) =>{
-  User.findByIdAndDelete({_id:req.params.id},req.body).then(function(User){
-    res.status(200).send(User);
+  User.findByIdAndDelete({_id:req.params.id},req.body).then(function(user){
+    res.status(200).json({
+      msg:"Deleted Data Successful",
+      data:user
+    })
   });
 });
 
