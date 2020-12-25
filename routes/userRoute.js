@@ -85,12 +85,19 @@ router.post("/signin", async (req, res) => {
 }
 });
 
-    //users:email update request
+    //users: update request
 router.put('/forgetpass/:id',(req,res) =>{
   User.findByIdAndUpdate({_id:req.params.id},req.body).then(function(User){
-    res.send(User);
-  })
- 
-  
+    res.status(200).send(User);
+  });
 });
+
+
+//users:delete request
+router.delete('/delete/:id',(req,res) =>{
+  User.findByIdAndDelete({_id:req.params.id},req.body).then(function(User){
+    res.status(200).send(User);
+  });
+});
+
 module.exports = router;
