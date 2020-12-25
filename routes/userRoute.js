@@ -1,10 +1,10 @@
 const express = require("express");
 const { connection } = require("mongoose");
-
+const getToken = require("../jwt");
 const User = require("../models/userModel");
-
-
 const router = express.Router();
+
+
 
 // TODO: express-validator, bcryptjs, jsonwebtoken eklenecek
 // TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
@@ -43,7 +43,7 @@ router.post("/signup", async (req, res) => {
       .json({
         msg :"Registration Successful",
         succes: true,
-        data: user
+        data: user,
 
       });
 
@@ -74,6 +74,8 @@ router.post("/signin", async (req, res) => {
       msg: "Login Succesfull",
       email: email,
       password: password,
+      token:getToken(user)
+      
 
 
 
