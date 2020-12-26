@@ -3,7 +3,7 @@ const mongoose  = require("mongoose");
 const getToken = require("../tools");
 const User = require("../models/userModel");
 const productModel = require("../models/productModel");
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 
 
@@ -16,12 +16,13 @@ const router = express.Router();
 router.post("/signup", async (req, res) => {
   const { email, password, name, isAdmin, created, profile_image } = req.body;
   
-
+//User Email Database Kontrolü
   try {
     let user = await User.findOne({
       email,
     });
 
+    //Eğer Kullanıcı Db'de varsa Dönen Sonuç
     if (user) {
       return res.status(400).json({
         succes: false,
