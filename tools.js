@@ -13,6 +13,8 @@ const getToken = (user) => {
  
 }
 
+
+//Kullanıcı ve ürün operasyonlarında eğer Admin ise kural tanımlaması routerların içine isAdmin olarak yazılacak.
 const isAdmin =(req,res,next) =>{
   console.log(req.user);
   if(req.user && req.user.isAdmin){

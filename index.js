@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => res.json({ message: "working!" }));
 
 app.use("/api/auth", userRoute);
-app.use("/api/product",productRoute);
+app.use("/api/products",productRoute);
 
 
 
