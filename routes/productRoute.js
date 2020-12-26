@@ -8,7 +8,7 @@ const router = express.Router();
 
 //Ürün getirme
 
-router.get("/getProductList",(req,res) =>{
+router.get("/",(req,res) =>{
     
     model.find({},(error,product)=>{
         if(error){
