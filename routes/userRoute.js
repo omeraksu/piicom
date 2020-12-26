@@ -2,6 +2,7 @@ const express = require("express");
 const { connection, Mongoose } = require("mongoose");
 const getToken = require("../tools");
 const User = require("../models/userModel");
+const productModel = require("../models/productModel");
 const router = express.Router();
 
 
@@ -107,28 +108,65 @@ router.post('/forgetpass', async (req,res) => {
 })
 
     //users: update request //POST REQ ile çalışılacak
-router.put('/forgetpass/:id',(req,res) =>{
-  
-  User.findByIdAndUpdate({_id:req.params.id},req.body).then(function(user){
-    res.status(200).json({
-      msg:"Updated Data Succesfull",
-      data:user
+    router.put('/forgetpass/:id', async (req, res) => {
+      const userId = req.params.id;
+      const user = await User.findById(userId);
+      if (user) {
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        user.password = req.body.password || user.password;
+        const updatedUser = await user.save();
+        res.send({
+          message:'Updated Data Succesfull',
+          _id: updatedUser.id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          isAdmin: updatedUser.isAdmin,
+          token: getToken(updatedUser),
+        });
+      } else {
+        res.status(404).send({ message: 'User Not Found' });
+      }
     });
-  });
-});
    
 
 
 //users:delete request
-router.delete('/delete/:id',(req,res) =>{
-  User.findByIdAndDelete({_id:req.params.id},req.body).then(function(user){
-    res.status(200).json({
-      msg:"Deleted Data Successful",
-      data:user
-    })
-  });
+router.delete('/delete/:id',async(req,res)=>{
+  const deletedUser =await User.findByIdAndDelete(req.params.id);
+  if(deletedUser){
+    await deletedUser.delete();
+    res.send({message:"User Deleted"});
+  }else{
+    res.send('Error in Deletion.');
+  }
 });
 
 
 
 module.exports = router;
+
+
+
+
+
+// router.delete('/delete/:id',(req,res) =>{
+//   User.findByIdAndDelete({_id:req.params.id},req.body).then(function(user){
+//     res.status(200).json({
+//       msg:"Deleted Data Successful",
+//       data:user
+//     })
+//   });
+// });
+
+
+
+// router.delete('/delete/:id',async(req,res)=>{
+//   const deletedUser =await User.findByIdAndDelete(req.params.id);
+//   if(deletedUser){
+//     await deletedUser.delete();
+//     res.send({message:"User Deleted"});
+//   }else{
+//     res.send('Error in Deletion.');
+//   }
+// });

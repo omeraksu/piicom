@@ -20,4 +20,4 @@ const isAdmin =(req,res,next) =>{
   }
   return res.status(401).send({message:'Admin Token is not Valid'});
 }
-module.exports =  {getToken,isAdmin};
+module.exports =  getToken,isAdmin;
