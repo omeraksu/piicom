@@ -1,6 +1,6 @@
 const express = require("express");
 const { connection, Mongoose } = require("mongoose");
-const getToken = require("../jwt");
+const getToken = require("../tools");
 const User = require("../models/userModel");
 const router = express.Router();
 

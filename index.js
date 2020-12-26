@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDatabase = require("./database/connectDatabase");
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/userRoute");
+const productRoute = require("./routes/productRoute");
 
 
 
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => res.json({ message: "working!" }));
 
 app.use("/api/auth", userRoute);
+app.use("/api/product",productRoute);
 
 
 
