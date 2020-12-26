@@ -8,6 +8,8 @@ const productRoute = require("./routes/productRoute");
 
 
 
+
+
 //ENV Config
 dotenv.config({
   path: "./config.env",
@@ -21,6 +23,8 @@ const jwt = process.env.JWT_SECRET || cokgizli;
 const app = express();
 
 app.use(bodyParser.json());
+
+
 
 
 app.get("/", (req, res) => res.json({ message: "working!" }));

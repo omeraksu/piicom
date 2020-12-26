@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
+
 const userSchema = new mongoose.Schema({
 
 
   email: {
     type: String,
-    required: true,
+    required: [true,'Email is required.'],
     unique: true,
     match: [
       /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
@@ -14,12 +15,14 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: [true,'Password is required.'],
     minlength: 6,
+    
     
   },
   name: {
     type: String,
+    required:[true,'Name is required.']
   },
   isAdmin: {
     type: Boolean,
