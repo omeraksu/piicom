@@ -150,23 +150,3 @@ module.exports = router;
 
 
 
-// router.delete('/delete/:id',(req,res) =>{
-//   User.findByIdAndDelete({_id:req.params.id},req.body).then(function(user){
-//     res.status(200).json({
-//       msg:"Deleted Data Successful",
-//       data:user
-//     })
-//   });
-// });
-
-
-
-// router.delete('/delete/:id',async(req,res)=>{
-//   const deletedUser =await User.findByIdAndDelete(req.params.id);
-//   if(deletedUser){
-//     await deletedUser.delete();
-//     res.send({message:"User Deleted"});
-//   }else{
-//     res.send('Error in Deletion.');
-//   }
-// });
