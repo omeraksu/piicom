@@ -1,8 +1,8 @@
-const { response } = require('express');
 const express = require('express');
-const  model  = require('../models/productModel');
 const Product = require('../models/productModel');
-const { isAdmin } = require('../tools');
+const isAdmin = require('../tools');
+const isAuth = require('../tools');
+
 
 const router = express.Router();
 
@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
 
 // Ürün Güncelleme
 
-router.put('/:id', async (req, res) => {
+router.put('/:id',async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
@@ -74,7 +74,7 @@ router.delete('/:id', async (req, res) => {
     const deletedProduct = await Product.findById(req.params.id);
     if (deletedProduct) {
         await deletedProduct.delete();
-        res.send({ message: 'Product Deleted' });
+        res.send({ message: 'Product Deleted', });
     } else {
         res.send('Error in Deletion.');
     }

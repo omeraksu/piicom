@@ -19,7 +19,7 @@ dotenv.config({
 connectDatabase();
 
 const PORT = process.env.PORT || 3000;
-const jwt = process.env.JWT_SECRET || cokgizli;
+const jwt = process.env.JWT_SECRET || 'cokgizli';
 const app = express();
 
 app.use(bodyParser.json());

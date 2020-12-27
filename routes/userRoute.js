@@ -1,14 +1,18 @@
 const express = require("express");
 const mongoose  = require("mongoose");
 const getToken = require("../tools");
+const isAdmin = require("../tools")
 const User = require("../models/userModel");
 const productModel = require("../models/productModel");
+const isAuth = require('../tools');
 const bcrypt = require('bcrypt');
+
+
 const router = express.Router();
 
 
 
-// TODO: express-validator, bcryptjs, jsonwebtoken eklenecek
+// TODO: express-validator,  jsonwebtoken eklenecek
 // TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
 
 // AUTH
@@ -32,14 +36,14 @@ router.post("/signup", async (req, res) => {
      
       
     }
-     //Hash Password
+     //Hash Password  
     const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password,salt);
 
     // user defination
     user = new User({
       email,
-      password:hashedPassword,
+      password,
       name,
       isAdmin,
       created,
@@ -55,7 +59,12 @@ router.post("/signup", async (req, res) => {
       .json({
         msg :"Registration Successful",
         succes: true,
-        data: user,
+        email:email,
+        password:hashedPassword,
+        name:name,
+        isAdmin:isAdmin,
+        created:created,
+        profile_image:profile_image
 
       });
 
