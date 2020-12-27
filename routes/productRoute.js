@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/",(req,res) =>{
     
-    model.find({},(error,product)=>{
+    Product.find({},(error,product)=>{
         if(error){
             res.send("Product is not Found");
         }

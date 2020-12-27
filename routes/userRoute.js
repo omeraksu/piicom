@@ -151,7 +151,19 @@ router.delete('/delete/:id',async(req,res)=>{
   }
 });
 
+// Tüm Kullanıcıları getirme
 
+router.get("/",(req,res) =>{
+    
+  User.find({},(error,user)=>{
+      if(error){
+          res.send("Users is not Found");
+      }
+      else{
+          res.json(user);
+      }
+  })
+})
 
 module.exports = router;
 
