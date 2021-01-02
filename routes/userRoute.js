@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose  = require("mongoose");
 const getToken = require("../tools");
-const isAdmin = require("../tools")
 const User = require("../models/userModel");
 const productModel = require("../models/productModel");
-const isAuth = require('../tools');
+const CustomError = require("../helpers/CustomError");
+const asyncErrorWrapper = require("express-async-handler")
 const bcrypt = require('bcrypt');
+
 
 
 const router = express.Router();
@@ -17,25 +18,16 @@ const router = express.Router();
 
 // AUTH
 
-router.post("/signup", async (req, res) => {
+router.post("/signup",asyncErrorWrapper( async (req, res,next) => {
   const { email, password, name, isAdmin, created, profile_image } = req.body;
   
 //User Email Database Kontrolü
-  try {
+  
     let user = await User.findOne({
       email,
     });
 
-    //Eğer Kullanıcı Db'de varsa Dönen Sonuç
-    if (user) {
-      return res.status(400).json({
-        succes: false,
-        msg: "User Already Exists",
-      });
-
-     
-      
-    }
+  
      //Hash Password  
     const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password,salt);
@@ -69,96 +61,71 @@ router.post("/signup", async (req, res) => {
       });
 
     //catch
-  } catch (err) {
-    res.status(401).send({
-       msg: err.message
-    });
-  }
-});
 
-router.post("/signin", async (req, res) => {
+   
+}));
+
+router.post("/signin",asyncErrorWrapper( async (req, res,next) => {
   const { email, password } = req.body;
 
-  try {
+  
     let user = await User.findOne({
       email,
       password,
      
     });
 
-    if (!user)
-      return res.status(400).json({
-        message: "User Not Exist",
-      });
+    // if (!user)
+    //   return res.status(400).json({
+    //     message: "User Not Exist",
+    //   });
 
     // response
     res.status(200).send({
       msg: "Login Succesfull",
+      succes: true,
       data:user,
+        
       token:getToken(user)
       
     });
-  } catch (error) {
-  res.send({ msg: error.message });
-}
-});
+
+}));
 
 
-router.post('/forgetpass', async (req,res) => {
-  const {email} = req.body
-  try {
-      let user = await User.findOne({
-        email
-      })
-      if(!user){
-        res.status(400).send({
-          msg: "Email is not Defined"
-        })
-      }
-      res.status(200).send({
-        msg: "Email is Defined",
-        data: user
-      })
-  }
-   catch(err){
-     res.send({msg: err.message});
-   }
-})
+
 
     //users: update request //POST REQ ile çalışılacak
-    router.put('/forgetpass/:id', async (req, res) => {
+    router.put('/forgetpass/:id', asyncErrorWrapper(async (req, res,next) => {
       const userId = req.params.id;
       const user = await User.findById(userId);
-      if (user) {
+      
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
         user.password = req.body.password || user.password;
+        user.profile_image =req.body.profile_image || user.profile_image;
+     
         const updatedUser = await user.save();
-        res.send({
-          message:'Updated Data Succesfull',
-          _id: updatedUser.id,
-          name: updatedUser.name,
-          email: updatedUser.email,
-          isAdmin: updatedUser.isAdmin,
-          token: getToken(updatedUser),
-        });
-      } else {
-        res.status(404).send({ message: 'User Not Found' });
-      }
-    });
+        return res.status(200)
+        .send({ message: 'User Updated',
+         data: updatedUser,
+         token: getToken(updatedUser)
+       });
+          
+        
+    
+    }));
    
 
 
 //users:delete request
-router.delete('/delete/:id',async(req,res)=>{
+router.delete('/delete/:id',asyncErrorWrapper(async(req,res,next)=>{
   const deletedUser =await User.findByIdAndDelete(req.params.id);
-  if(deletedUser){
+  
     await deletedUser.delete();
     res.send({message:"User Deleted"});
-  }else{
-    res.send('Error in Deletion.');
-  }
-});
+ 
+}));
 
 // Tüm Kullanıcıları getirme
 
@@ -173,6 +140,10 @@ router.get("/",(req,res) =>{
       }
   })
 })
+
+
+
+
 
 module.exports = router;
 

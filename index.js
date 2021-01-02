@@ -5,6 +5,7 @@ const connectDatabase = require("./database/connectDatabase");
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
+const customErrorHandler = require('./middlewares/error/customErrorHandler')
 
 
 
@@ -19,7 +20,7 @@ dotenv.config({
 connectDatabase();
 
 const PORT = process.env.PORT || 3000;
-const jwt = process.env.JWT_SECRET || 'cokgizli';
+const jwt = process.env.JWT_SECRET || cokgizli;
 const app = express();
 
 app.use(bodyParser.json());
@@ -32,6 +33,8 @@ app.get("/", (req, res) => res.json({ message: "working!" }));
 app.use("/api/auth", userRoute);
 app.use("/api/products",productRoute);
 
+//Error Handler
+app.use(customErrorHandler);
 
 
 // PORT Config
