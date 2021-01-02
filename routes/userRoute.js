@@ -1,11 +1,9 @@
 const express = require("express");
 const mongoose  = require("mongoose");
-const getToken = require("../tools");
 const User = require("../models/userModel");
 const productModel = require("../models/productModel");
 const CustomError = require("../helpers/CustomError");
 const asyncErrorWrapper = require("express-async-handler")
-const bcrypt = require('bcrypt');
 
 
 
@@ -28,9 +26,7 @@ router.post("/signup",asyncErrorWrapper( async (req, res,next) => {
     });
 
   
-     //Hash Password  
-    const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password,salt);
+
 
     // user defination
     user = new User({
@@ -51,12 +47,8 @@ router.post("/signup",asyncErrorWrapper( async (req, res,next) => {
       .json({
         msg :"Registration Successful",
         succes: true,
-        email:email,
-        password:hashedPassword,
-        name:name,
-        isAdmin:isAdmin,
-        created:created,
-        profile_image:profile_image
+        data:user
+      
 
       });
 
@@ -75,18 +67,18 @@ router.post("/signin",asyncErrorWrapper( async (req, res,next) => {
      
     });
 
-    // if (!user)
-    //   return res.status(400).json({
-    //     message: "User Not Exist",
-    //   });
+  
 
     // response
-    res.status(200).send({
+    res.status(200).json({
       msg: "Login Succesfull",
       succes: true,
-      data:user,
+      data:user
+
+
+
         
-      token:getToken(user)
+      
       
     });
 
@@ -109,7 +101,7 @@ router.post("/signin",asyncErrorWrapper( async (req, res,next) => {
         return res.status(200)
         .send({ message: 'User Updated',
          data: updatedUser,
-         token: getToken(updatedUser)
+        
        });
           
         
