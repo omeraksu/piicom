@@ -20,7 +20,7 @@ dotenv.config({
 connectDatabase();
 
 const PORT = process.env.PORT || 3000;
-const jwt = process.env.JWT_SECRET || cokgizli;
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 
 app.get("/", (req, res) => res.json({ message: "working!" }));
 
-app.use("/api/auth", userRoute);
+app.use("/api/auth",userRoute);
 app.use("/api/products",productRoute);
 
 //Error Handler

@@ -1,24 +1,25 @@
 const express = require('express');
-
 const Product = require('../models/productModel');
 
-
+const getAccessToRoute  = require("../middlewares/authorization/auth")
 
 const router = express.Router();
 
 //Ürün getirme
 
-router.get("/",(req,res) =>{
+// router.get("/",getAccessToRoute,(req,res) =>{
+   
     
-    Product.find({},(error,product)=>{
-        if(error){
-            res.send("Product is not Found");
-        }
-        else{
-            res.json(product);
-        }
-    })
-})
+//     Product.find({},(error,product)=>{
+//         if(error){
+//             res.send("Product is not Found");
+//         }
+//         else{
+//             res.json(product);
+//         }
+//     })
+    
+// })
 
 
 
@@ -34,6 +35,7 @@ router.post('/',async (req, res) => {
         description: req.body.description,
 
     });
+    
     const newProduct = await product.save();
     if (newProduct) {
         return res
