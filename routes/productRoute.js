@@ -1,13 +1,13 @@
 const express = require('express');
 const Product = require('../models/productModel');
-const getAccessToRoute  = require("../middlewares/authorization/auth");
+const {getAccessToRoute, getAdminAccess}  = require("../middlewares/authorization/auth");
 const CustomError = require("../helpers/errors/CustomError")
 const asyncErrorWrapper = require("express-async-handler");
 const router = express.Router();
 
 //Ürün getirme
 
-router.get("/",(req,res) =>{
+router.get("/",getAccessToRoute,getAdminAccess,(req,res,next) =>{
    
     
     Product.find({},(error,product)=>{
@@ -15,8 +15,10 @@ router.get("/",(req,res) =>{
             res.send("Product is not Found");
         }
         else{
+            next();
             res.json(product);
         }
+
     })
     
 })
@@ -50,6 +52,8 @@ router.post("/newProduct",getAccessToRoute,asyncErrorWrapper(async (req, res,nex
 router.post('/update/:id',getAccessToRoute,asyncErrorWrapper(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
+
+    
    
         product.name = req.body.name || product.name;
         product.price = req.body.price || product.price;
@@ -79,13 +83,6 @@ router.delete('/delete/:id',getAccessToRoute,asyncErrorWrapper(async (req, res) 
         res.send({ message: 'Product Deleted', });
    
 }))
-
-
-
-
-
-
-
 
 
 module.exports = router
