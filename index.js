@@ -5,7 +5,10 @@ const connectDatabase = require("./database/connectDatabase");
 const bodyParser = require("body-parser");
 const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
+const adminRoute = require("./routes/adminRoute");
+
 const customErrorHandler = require('./middlewares/error/customErrorHandler')
+
 
 
 
@@ -32,6 +35,8 @@ app.get("/", (req, res) => res.json({ message: "working!" }));
 
 app.use("/api/auth",userRoute);
 app.use("/api/products",productRoute);
+app.use("/api/",adminRoute)
+
 
 //Error Handler
 app.use(customErrorHandler);

@@ -3,10 +3,13 @@ const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const productModel = require("../models/productModel");
 const { sendJwtToClient } = require("../helpers/authorization/tokenHelpers");
-const getAccessToRoute = require('../middlewares/authorization/auth');
+const {getAccessToRoute} = require('../middlewares/authorization/auth');
 const CustomError = require("../helpers/errors/CustomError")
+
 const asyncErrorWrapper = require("express-async-handler");
 const { valideUserInput, comparePassword } = require("../helpers/inputHelpers/inputHelpers");
+
+
 
 
 
@@ -14,10 +17,10 @@ const router = express.Router();
 
 
 
-// TODO: express-validator,  jsonwebtoken eklenecek
-// TODO: doğrulama şeyleri express-validator ile yapılacak ( min password length vs )
+
 
 // AUTH
+
 
 //Profil
 router.get("/profile", getAccessToRoute, (req, res, next) => {
@@ -31,13 +34,8 @@ router.get("/profile", getAccessToRoute, (req, res, next) => {
   })
 })
 
-
-
-
-
-
 router.post("/signup", asyncErrorWrapper(async (req, res, next) => {
-  const { email, password, name, isAdmin, created, profile_image } = req.body;
+  const { email, password, name, role, created, profile_image } = req.body;
 
   //User Email Database Kontrolü
 
@@ -50,11 +48,11 @@ router.post("/signup", asyncErrorWrapper(async (req, res, next) => {
     email,
     password,
     name,
-    isAdmin,
+    role,
     created,
     profile_image
   });
- 
+
 
   // save
   await user.save();
@@ -87,23 +85,23 @@ router.post("/signin", asyncErrorWrapper(async (req, res, next) => {
 
 }));
 // Kullanıcı Çıkış yaparken cookieyi çıkış yaptığı anda kaldırma
-router.get("/logout",getAccessToRoute,(async(req,res,next)=>{
-  const {NODE_ENV} =process.env;
+router.get("/logout", getAccessToRoute, (async (req, res, next) => {
+  const { NODE_ENV } = process.env;
 
   return res.status(200)
-  .cookie({
-    httpOnly:true,
-    expires:new Date(Date.now()),
-    secure:NODE_ENV === "development" ? false:true 
-  }).json({
-    success:true,
-    message:"Logout Successfull"
-  })
+    .cookie({
+      httpOnly: true,
+      expires: new Date(Date.now()),
+      secure: NODE_ENV === "development" ? false : true
+    }).json({
+      success: true,
+      message: "Logout Successfull"
+    })
 }))
 
 
 
-router.put('/forgetpass/:id', asyncErrorWrapper(async (req, res, next) => {
+router.post('/userUpdate/:id', asyncErrorWrapper(async (req, res, next) => {
   const userId = req.params.id;
   const user = await User.findById(userId);
 
@@ -120,9 +118,10 @@ router.put('/forgetpass/:id', asyncErrorWrapper(async (req, res, next) => {
 
     });
 
-
-
 }));
+
+// Kullanıcı Email Şifre Sıfırlama
+
 
 
 
@@ -134,11 +133,6 @@ router.delete('/delete/:id', asyncErrorWrapper(async (req, res, next) => {
   res.send({ message: "User Deleted" });
 
 }));
-
-// Tüm Kullanıcıları getirme
-
-
-
 
 
 

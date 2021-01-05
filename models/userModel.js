@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const userSchema = new mongoose.Schema({
 
 
@@ -15,9 +16,9 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required.'],
+    // required: [true, 'Password is required.'],
     minlength: 6,
-    select:false
+    select: false
 
 
   },
@@ -25,9 +26,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Name is required.']
   },
-  isAdmin: {
-    type: Boolean,
-    default: false,
+  role: {
+    type: String,
+    default: "user",
+    enum:["user","admin"]
   },
   created: {
     type: Date,
@@ -36,7 +38,9 @@ const userSchema = new mongoose.Schema({
   profile_image: {
     type: String,
     default: "Default.jpg"
-  }
+  },
+ 
+  
 
 });
 //UserSchema Methods
@@ -52,7 +56,9 @@ userSchema.methods.generateJwtFromUser = function () {
   })
   return token;
 };
-// Password Hsh
+
+
+// Password Hash
 userSchema.pre("save", function (next) {
   // Parola Değişme
   if (!this.isModified("password")) {
