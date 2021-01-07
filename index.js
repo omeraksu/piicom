@@ -1,46 +1,34 @@
+require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const connectDatabase = require("./database/connectDatabase");
 const bodyParser = require("body-parser");
+const cors = require("cors");
+
 const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
 const adminRoute = require("./routes/adminRoute");
 
-const customErrorHandler = require('./middlewares/error/customErrorHandler')
+const connectDatabase = require("./database/connectDatabase");
+const customErrorHandler = require("./middlewares/error/customErrorHandler");
 
-
-
-
-
-
-//ENV Config
-dotenv.config({
-  path: "./config.env",
-});
-
-//MongoDb Connection
+// MongoDb Connection
 connectDatabase();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => res.json({ message: "lan kimsin amq!" }));
 
-
-
-app.get("/", (req, res) => res.json({ message: "working!" }));
-
-app.use("/api/auth",userRoute);
-app.use("/api/products",productRoute);
-app.use("/api/",adminRoute)
-
+app.use("/api/auth", userRoute);
+app.use("/api/products", productRoute);
+app.use("/api/", adminRoute);
 
 //Error Handler
 app.use(customErrorHandler);
-
 
 // PORT Config
 app.listen(PORT, () => {
