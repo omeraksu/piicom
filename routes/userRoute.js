@@ -12,10 +12,13 @@ const {
   comparePassword,
 } = require("../helpers/inputHelpers/inputHelpers");
 
+const sendEmail = require("../helpers/libraries/sendEmail");
 const router = express.Router();
 
+
+
 //Profil
-router.get("/profile", getAccessToRoute, (req, res, next) => {
+router.get("/profile", (req, res, next) => {
   res.json({
     success: true,
     data: {
@@ -25,6 +28,7 @@ router.get("/profile", getAccessToRoute, (req, res, next) => {
   });
 });
 
+// Kayıt Ol
 router.post(
   "/signup",
   asyncErrorWrapper(async (req, res, next) => {
@@ -52,6 +56,8 @@ router.post(
   })
 );
 
+
+// Giriş Yap
 router.post(
   "/signin",
   asyncErrorWrapper(async (req, res, next) => {
@@ -90,7 +96,7 @@ router.get("/logout", getAccessToRoute, async (req, res, next) => {
 
 router.post(
   "/userUpdate/:id",
-  asyncErrorWrapper(async (req, res, next) => {
+  asyncErrorWrapper, getAccessToRoute, (async (req, res, next) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
 
@@ -120,4 +126,85 @@ router.delete(
   })
 );
 
+
+// Forget Password
+
+router.post("/forgotpass", asyncErrorWrapper(async (req, res, next) => {
+  const resetEmail = req.body.email;
+
+  const user = await User.findOne({ email: resetEmail });
+
+  if (!user) {
+    return next(new CustomError("There is no user with that email", 400));
+
+  }
+  const resetPasswordToken = user.getResetPasswordTokenFromUser();
+
+  await user.save();
+
+  const resetPasswordUrl = `http://localhost:5000/api/auth/resetpassword?resetPasswordToken=${resetPasswordToken}`;
+
+  const emailTemplate = `
+  <h3> Reset Your Password</h3>
+  <p> This <a href = '${resetPasswordUrl}' target = '_blank'>link</a> will expire in 1 hour</p>
+  `;
+
+  try {
+    await sendEmail({
+      from: process.env.SMTP_USER,
+      to: resetEmail,
+      subject: "Reset Your Password",
+      html: emailTemplate
+    })
+    return res.status(200).json({
+      success: true,
+      message: "Token Send To Your Email"
+    })
+  }
+  catch (err) {
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
+
+    await user.save();
+
+    return next(new customError("Email Could Not Be Sent", 500))
+  }
+
+
+}))
+
+router.put("/resetpassword", asyncErrorWrapper(async (req, res, next) => {
+// Query den Token getirilir ve Body den password alınır
+  const { resetPasswordToken } = req.query;
+  const { password } = req.body;
+
+  // Eğer token yoksa veya hatalyısa fırlatılacak hata
+  if (!resetPasswordToken) {
+    return next(new CustomError("Please provide a valid token", 400));
+  }
+
+  //Tokeni bul reset pasword tokeni eşitle geçerlilik süreci anlık süreyi geçmişse hata.
+  let user = await User.findOne({
+    resetPasswordToken: resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }
+  })
+  if(!user){
+    return next(new CustomError("Invalid Token or Session Expired",400));
+  }
+
+  // Bilgiler eşitlenir
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  // Kaydedilir
+  await user.save();
+
+  return res.status(200)
+    .json({
+      success: true,
+      message: "Reset Password Process Successful"
+    })
+
+}))
 module.exports = router;

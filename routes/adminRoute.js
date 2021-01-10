@@ -7,9 +7,7 @@ const {
 
 const router = express.Router();
 
-router.use([getAccessToRoute, getAdminAccess]);
-
-router.get("/adminPanel", (req, res, next) => {
+router.get("/adminPanel", getAccessToRoute,getAdminAccess,(req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Admin Page",
