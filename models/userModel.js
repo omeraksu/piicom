@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "user",
-    enum:["user","admin"]
+    enum: ["user", "admin"]
   },
   created: {
     type: Date,
@@ -39,8 +39,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "Default.jpg"
   },
- 
-  
+
+  resetPasswordToken: {
+    type: String
+  },
+
+  resetPasswordExpire: {
+    type: Date
+  }
+
 
 });
 //UserSchema Methods
@@ -55,6 +62,23 @@ userSchema.methods.generateJwtFromUser = function () {
     expiresIn: JWT_EXPIRE
   })
   return token;
+};
+
+//Generate Password Token
+userSchema.methods.getResetPasswordTokenFromUser = function () {
+  const randomHexString = crypto.randomBytes(15).toString("hex");
+  const {RESET_PASSWORD_EXPIRE}= process.env;
+  const resetPasswordToken = crypto
+    .createHash("SHA256")
+    .update(randomHexString)
+    .digest("hex");
+  console.log(resetPasswordToken);
+
+  this.resetPasswordToken = resetPasswordToken;
+  this.resetPasswordExpire = Date.now() + parseInt(RESET_PASSWORD_EXPIRE)
+
+  return resetPasswordToken;
+
 };
 
 
